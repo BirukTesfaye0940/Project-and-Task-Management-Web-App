@@ -1,5 +1,6 @@
 import Task from "../models/Task.model.js";
 import Project from "../models/Project.model.js";
+import { createNotification } from "./notification.controller.js";
 
 // CREATE
 export const createTask = async (req, res) => {
@@ -82,8 +83,20 @@ export const assignUsersToTask = async (req, res) => {
 
     // Avoid duplicates
     const updatedAssignments = [...new Set([...task.assignedTo.map(id => id.toString()), ...assignedTo])];
+    const newAssignments = assignedTo.filter((id) => !task.assignedTo.includes(id));
     task.assignedTo = updatedAssignments;
     await task.save();
+
+    // 🎯 Send notification for new assignees only
+    if (newAssignments.length > 0) {
+      const io = req.app.get("io"); // get socket instance
+      await createNotification({
+        recipients: newAssignments,
+        message: `You have been assigned to a new task: ${task.title}`,
+        taskId: task._id,
+        io,
+      });
+    }
 
     res.status(200).json(task);
   } catch (error) {
@@ -91,3 +104,4 @@ export const assignUsersToTask = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
