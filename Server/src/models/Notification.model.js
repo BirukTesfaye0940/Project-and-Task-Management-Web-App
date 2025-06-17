@@ -22,12 +22,7 @@ const notificationSchema = new mongoose.Schema(
     task: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Task",
-      required: false, // Optional, for task-related notifications
-    },
-    project: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      required: false, // Optional, for project-related notifications
+      required: true,
     },
   },
   { timestamps: true }

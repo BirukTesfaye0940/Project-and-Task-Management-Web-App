@@ -10,7 +10,8 @@ import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import projectRoutes from "./routes/projects.route.js";
 import taskRoutes from "./routes/tasks.route.js";
-import notificationRoutes from "./routes/notification.routes.js"; // newly added
+import notificationRoutes from "./routes/notifications.route.js"
+import issuesRoutes from './routes/issues.route.js'
 
 // Load environment variables
 dotenv.config();
@@ -65,7 +66,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
-app.use("/api/notifications", notificationRoutes); // now active
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/issues", issuesRoutes)
 
 // Start server
 const PORT = process.env.PORT || 5000;
