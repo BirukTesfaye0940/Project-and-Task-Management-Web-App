@@ -1,22 +1,28 @@
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { CheckCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CheckCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { loginUser, clearError } from '@/store/slices/authSlice';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { loginUser, clearError } from "@/store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -37,16 +43,16 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (user) {
-      toast.success('Welcome back!', {
-        description: 'You have successfully signed in.',
+      toast.success("Welcome back!", {
+        description: "You have successfully signed in.",
       });
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [user, navigate]);
 
   useEffect(() => {
     if (error) {
-      toast.error('Sign In Failed', {
+      toast.error("Sign In Failed", {
         description: error,
       });
       dispatch(clearError());
@@ -71,17 +77,21 @@ const LoginPage = () => {
               <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Dooit
+              ProcrastiNOT
             </h1>
           </Link>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Welcome back
+          </h2>
           <p className="text-gray-600">Sign in to your account to continue</p>
         </div>
 
         {/* Login Form */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-2xl text-center text-gray-900">Sign In</CardTitle>
+            <CardTitle className="text-2xl text-center text-gray-900">
+              Sign In
+            </CardTitle>
             <CardDescription className="text-center text-gray-600">
               Enter your credentials to access your account
             </CardDescription>
@@ -97,7 +107,7 @@ const LoginPage = () => {
                   type="email"
                   placeholder="john@example.com"
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  {...register('email')}
+                  {...register("email")}
                 />
                 {errors.email && (
                   <p className="text-sm text-red-600">{errors.email.message}</p>
@@ -111,10 +121,10 @@ const LoginPage = () => {
                 <div className="relative">
                   <Input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     className="pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    {...register('password')}
+                    {...register("password")}
                   />
                   <button
                     type="button"
@@ -129,7 +139,9 @@ const LoginPage = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-600">{errors.password.message}</p>
+                  <p className="text-sm text-red-600">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
@@ -153,14 +165,14 @@ const LoginPage = () => {
                     Signing In...
                   </>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
-                Don't have an account?{' '}
+                Don't have an account?{" "}
                 <Link
                   to="/signup"
                   className="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors"
@@ -174,11 +186,11 @@ const LoginPage = () => {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-8">
-          By signing in, you agree to our{' '}
+          By signing in, you agree to our{" "}
           <Link to="/terms" className="text-blue-600 hover:underline">
             Terms of Service
-          </Link>{' '}
-          and{' '}
+          </Link>{" "}
+          and{" "}
           <Link to="/privacy" className="text-blue-600 hover:underline">
             Privacy Policy
           </Link>

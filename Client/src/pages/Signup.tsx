@@ -89,7 +89,7 @@ const SignUpPage = () => {
               <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Dooit
+              ProcrastiNOT
             </h1>
           </Link>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h2>
@@ -253,7 +253,7 @@ const SignUpPage = () => {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-8">
-          By creating an account, you're joining thousands of teams who trust Dooit with their projects.
+          By creating an account, you're joining thousands of teams who trust ProcrastiNOT with their projects.
         </p>
       </div>
     </div>

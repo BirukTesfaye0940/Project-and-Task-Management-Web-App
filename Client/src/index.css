@@ -42,9 +42,9 @@
 }
 
 #root {
-  /* max-width: 1800px; */
+  max-width: 2500px;
   margin: 0 auto;
-  padding: 2rem;
+  /* padding: 2rem; */
   text-align: center;
 }
 

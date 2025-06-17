@@ -1,9 +1,15 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, LogOut, User, Settings, Bell } from 'lucide-react';
-import { logoutUser } from '@/store/slices/authSlice';
-import type { RootState, AppDispatch } from '@/store/store';
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CheckCircle, LogOut, User, Settings, Bell } from "lucide-react";
+import { logoutUser } from "@/store/slices/authSlice";
+import type { RootState, AppDispatch } from "@/store/store";
 
 const DashboardPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -11,7 +17,7 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
   };
 
   return (
@@ -24,7 +30,7 @@ const DashboardPage = () => {
               <CheckCircle className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Dooit
+              ProcrastiNOT
             </h1>
           </div>
           <div className="flex items-center space-x-4">
@@ -65,9 +71,15 @@ const DashboardPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <p><strong>Name:</strong> {user?.fullName}</p>
-                  <p><strong>Email:</strong> {user?.email}</p>
-                  <p><strong>User ID:</strong> {user?._id}</p>
+                  <p>
+                    <strong>Name:</strong> {user?.fullName}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {user?.email}
+                  </p>
+                  <p>
+                    <strong>User ID:</strong> {user?._id}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -75,7 +87,9 @@ const DashboardPage = () => {
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-200">
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Get started with your project management</CardDescription>
+                <CardDescription>
+                  Get started with your project management
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -111,10 +125,13 @@ const DashboardPage = () => {
           <div className="mt-12 text-center">
             <Card className="shadow-lg border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <CardContent className="py-12">
-                <h3 className="text-2xl font-bold mb-4">Dashboard Features Coming Soon!</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  Dashboard Features Coming Soon!
+                </h3>
                 <p className="text-blue-100 mb-6">
-                  We're working hard to bring you an amazing project management experience.
-                  Features like project boards, team collaboration, and analytics are on the way!
+                  We're working hard to bring you an amazing project management
+                  experience. Features like project boards, team collaboration,
+                  and analytics are on the way!
                 </p>
                 <Button className="bg-white text-blue-600 hover:bg-gray-100">
                   Stay Updated

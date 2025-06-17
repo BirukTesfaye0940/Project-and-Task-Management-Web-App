@@ -1,70 +1,82 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  CheckCircle, 
-  Users, 
-  Calendar, 
-  BarChart3, 
-  Zap, 
-  Shield, 
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  CheckCircle,
+  Users,
+  Calendar,
+  BarChart3,
+  Zap,
+  Shield,
   Clock,
-  ArrowRight 
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
+  ArrowRight,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   const features = [
     {
       icon: Users,
-      title: 'Team Collaboration',
-      description: 'Work seamlessly with your team members in real-time'
+      title: "Team Collaboration",
+      description: "Work seamlessly with your team members in real-time",
     },
     {
       icon: Calendar,
-      title: 'Smart Scheduling',
-      description: 'Intelligent task scheduling and deadline management'
+      title: "Smart Scheduling",
+      description: "Intelligent task scheduling and deadline management",
     },
     {
       icon: BarChart3,
-      title: 'Progress Tracking',
-      description: 'Visual insights into your project progress and performance'
+      title: "Progress Tracking",
+      description: "Visual insights into your project progress and performance",
     },
     {
       icon: Zap,
-      title: 'Lightning Fast',
-      description: 'Optimized for speed and efficiency in every interaction'
+      title: "Lightning Fast",
+      description: "Optimized for speed and efficiency in every interaction",
     },
     {
       icon: Shield,
-      title: 'Secure & Private',
-      description: 'Enterprise-grade security to keep your data safe'
+      title: "Secure & Private",
+      description: "Enterprise-grade security to keep your data safe",
     },
     {
       icon: Clock,
-      title: 'Time Management',
-      description: 'Built-in time tracking and productivity analytics'
-    }
+      title: "Time Management",
+      description: "Built-in time tracking and productivity analytics",
+    },
   ];
 
   const testimonials = [
     {
-      name: 'Sarah Johnson',
-      role: 'Product Manager',
-      quote: 'ProcrastiNOT has transformed how our team collaborates. Project delivery is 40% faster now.',
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'
+      name: "Sarah Johnson",
+      role: "Product Manager",
+      quote:
+        "ProcrastiNOT has transformed how our team collaborates. Project delivery is 40% faster now.",
+      avatar:
+        "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2",
     },
     {
-      name: 'Michael Chen',
-      role: 'Development Lead',
-      quote: 'The best project management tool we\'ve used. Clean interface, powerful features.',
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'
+      name: "Michael Chen",
+      role: "Development Lead",
+      quote:
+        "The best project management tool we've used. Clean interface, powerful features.",
+      avatar:
+        "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2",
     },
     {
-      name: 'Emily Davis',
-      role: 'Creative Director',
-      quote: 'Finally, a tool that doesn\'t get in the way of creativity. Our team loves it!',
-      avatar: 'https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'
-    }
+      name: "Emily Davis",
+      role: "Creative Director",
+      quote:
+        "Finally, a tool that doesn't get in the way of creativity. Our team loves it!",
+      avatar:
+        "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2",
+    },
   ];
 
   return (
@@ -77,12 +89,15 @@ const LandingPage = () => {
               <CheckCircle className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            ProcrastiNOT
+              ProcrastiNOT
             </h1>
           </div>
           <div className="flex items-center space-x-4">
             <Link to="/login">
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+              <Button
+                variant="ghost"
+                className="text-gray-600 hover:text-gray-900"
+              >
                 Sign In
               </Button>
             </Link>
@@ -105,18 +120,26 @@ const LandingPage = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Streamline your workflow, collaborate effectively, and deliver projects on time. 
-            ProcrastiNOT brings all your project management needs into one beautiful, intuitive platform.
+            Streamline your workflow, collaborate effectively, and deliver
+            projects on time. ProcrastiNOT brings all your project management
+            needs into one beautiful, intuitive platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link to="/signup">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-6 text-lg">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-6 text-lg"
+              >
                 Start Here
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
             <Link to="/login">
-              <Button size="lg" variant="outline" className="border-2 border-gray-300 hover:border-blue-500 px-8 py-6 text-lg">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-gray-300 hover:border-blue-500 px-8 py-6 text-lg"
+              >
                 Sign In
               </Button>
             </Link>
@@ -132,17 +155,23 @@ const LandingPage = () => {
               Everything you need to succeed
             </h3>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Powerful features designed to help teams collaborate, organize, and deliver exceptional results
+              Powerful features designed to help teams collaborate, organize,
+              and deliver exceptional results
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="group hover:shadow-lg transition-all duration-200 border-0 shadow-md hover:-translate-y-1">
+              <Card
+                key={index}
+                className="group hover:shadow-lg transition-all duration-200 border-0 shadow-md hover:-translate-y-1"
+              >
                 <CardHeader>
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
                     <feature.icon className="w-6 h-6 text-white" />
                   </div>
-                  <CardTitle className="text-xl text-gray-900">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl text-gray-900">
+                    {feature.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-gray-600 leading-relaxed">
@@ -168,20 +197,27 @@ const LandingPage = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200">
+              <Card
+                key={index}
+                className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-200"
+              >
                 <CardContent className="p-6">
                   <p className="text-gray-700 mb-6 italic leading-relaxed">
                     "{testimonial.quote}"
                   </p>
                   <div className="flex items-center">
-                    <img 
-                      src={testimonial.avatar} 
+                    <img
+                      src={testimonial.avatar}
                       alt={testimonial.name}
                       className="w-12 h-12 rounded-full object-cover mr-4"
                     />
                     <div>
-                      <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                      <p className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {testimonial.role}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -198,10 +234,14 @@ const LandingPage = () => {
             Ready to get started?
           </h3>
           <p className="text-xl mb-10 text-blue-100">
-            Join thousands of teams already using Dooit to manage their projects more effectively
+            Join thousands of teams already using Dooit to manage their projects
+            more effectively
           </p>
           <Link to="/signup">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-6 text-lg font-semibold">
+            <Button
+              size="lg"
+              className="bg-white text-blue-600 hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-6 text-lg font-semibold"
+            >
               Start for free here
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -219,7 +259,8 @@ const LandingPage = () => {
             <h4 className="text-2xl font-bold text-white">ProcrastiNOT</h4>
           </div>
           <p className="text-gray-400">
-            © 2025 ProcrastiNOT. All rights reserved. Made with ❤️ for productive teams.
+            © 2025 ProcrastiNOT. All rights reserved. Made with ❤️ for
+            productive teams.
           </p>
         </div>
       </footer>

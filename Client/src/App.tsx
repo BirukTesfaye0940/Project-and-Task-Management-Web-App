@@ -2,6 +2,9 @@ import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider } f
 import LandingPage from "./pages/LandingPage"
 import LoginPage from "./pages/Login"
 import SignUpPage from "./pages/Signup"
+import DashboardPage from "./pages/DashboardPage"
+import NotFound from "./pages/NotFound"
+import Layout from "./pages/Layout"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -9,6 +12,12 @@ const router = createBrowserRouter(
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route element={<Layout />}>
+        <Route path="/dashboard" element={<DashboardPage/>} />
+      </Route>
+      
+
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 )
