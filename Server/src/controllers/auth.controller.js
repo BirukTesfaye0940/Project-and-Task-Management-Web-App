@@ -2,48 +2,70 @@ import { generateToken } from "../lib/utils.js"
 import User from "../models/User.model.js"
 import bcrypt from "bcryptjs"
 import cloudinary from "../lib/cloudinary.js"
+import jwt from "jsonwebtoken";
+import Project from "../models/Project.model.js";
+import Invite from "../models/Invitation.model.js";
 
 export const signup = async (req, res) => {
-  const {fullName, email, password} = req.body
+  const { fullName, email, password, token } = req.body;
+
   try {
     if (!fullName || !email || !password) {
-      return res.status(400).json({message: "All fields are required"})
-    } 
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     if (password.length < 6) {
-      return res.status(400).json({message: "Password must be at least 6 characters"})
-     }
-      const user = await User.findOne({email})
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
 
-      if (user) return res.status(400).json({message: "Email already exists"})
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
 
-      const salt = await bcrypt.genSalt(10)
-      const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-      const newUser = new User({
-        fullName: fullName,
-        email: email,
-        password: hashedPassword
-      })
+    const newUser = new User({
+      fullName,
+      email,
+      password: hashedPassword,
+    });
 
-      if(newUser) {
-        // generate a jwt token
-        generateToken(newUser._id, res)
-        await newUser.save()
+    await newUser.save();
 
-        res.status(201).json({
-          _id:newUser._id,
-          fullName: newUser.fullName,
-          email: newUser.email,
-          profilePic: newUser.profilePic,
-        })
-      } else {
-        res.status(400).json({message: "Invalid user data"})
+    // Invite token handling
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (decoded.email === email) {
+          const project = await Project.findById(decoded.projectId);
+          if (project) {
+            project.team.push({ user: newUser._id, role: decoded.role });
+            await project.save();
+            await Invite.findOneAndDelete({ token });
+          }
+        }
+      } catch (err) {
+        console.error("Invalid or expired invite token");
+        // You can optionally return an error here or continue gracefully
       }
+    }
+
+    // Generate JWT and set cookie
+    generateToken(newUser._id, res);
+
+    res.status(201).json({
+      _id: newUser._id,
+      fullName: newUser.fullName,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
+    });
+
   } catch (error) {
-    console.log("Error in signup controller", error.message)
-    res.status(500).json({message: "Internal server error"})
+    console.error("Error in signup controller", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 export const login = async (req, res) => {
   const {email, password} = req.body

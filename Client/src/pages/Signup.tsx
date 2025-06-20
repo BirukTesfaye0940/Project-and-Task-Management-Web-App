@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { CheckCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 import { signupUser, clearError } from '@/store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import axios from 'axios'; // Import axios
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters'),
@@ -35,7 +36,13 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); // Use useLocation hook
   const { loading, error, user } = useAppSelector((state) => state.auth);
+
+  // Parse query params only once
+  const queryParams = new URLSearchParams(location.search);
+  const redirect = queryParams.get("redirect");
+  const token = queryParams.get("token");
 
   const {
     register,
@@ -49,14 +56,44 @@ const SignUpPage = () => {
 
   const acceptTerms = watch('acceptTerms');
 
+  // Effect to handle redirection AFTER successful signup
   useEffect(() => {
-    if (user) {
+    if (user) { // Check if a user is successfully authenticated (signed up)
       toast.success('Account Created Successfully!', {
-        description: 'Welcome to Dooit! Your account has been created.',
+        description: 'Welcome to ProcrastiNOT! Your account has been created.',
       });
-      navigate('/dashboard');
+
+      // If user signed up and there's an invite token, accept it
+      if (redirect === "accept-invite" && token) {
+        const acceptInvitation = async () => {
+          try {
+            await axios.post(
+              `http://localhost:5003/api/invite/accept/${token}`,
+              {},
+              { withCredentials: true }
+            );
+            toast.success("Invitation accepted!", {
+              description: "You have successfully joined the project.",
+            });
+            navigate("/dashboard", { replace: true }); // Use replace
+          } catch (err: any) {
+            console.error("Failed to accept invitation:", err);
+            toast.error("Invitation Error", {
+              description:
+                err.response?.data?.message ||
+                "Failed to accept invitation. It might be invalid or expired.",
+            });
+            // Still navigate to dashboard even if invite failed
+            navigate("/dashboard", { replace: true });
+          }
+        };
+        acceptInvitation();
+      } else {
+        // Regular successful signup, no invite token, go to dashboard
+        navigate('/dashboard', { replace: true });
+      }
     }
-  }, [user, navigate]);
+  }, [user, navigate, redirect, token]); // Add redirect and token to dependencies
 
   useEffect(() => {
     if (error) {
@@ -69,13 +106,16 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: SignupFormData) => {
     try {
+      // Exclude confirmPassword and acceptTerms as they are only for client-side validation
       const { 
-        // confirmPassword, 
-        // acceptTerms, 
-        ...signupData } = data;
+        //confirmPassword, acceptTerms,
+         ...signupData } = data;
+      // signupUser action should handle creating the user and then logging them in,
+      // which will update the 'user' state in Redux.
       await dispatch(signupUser(signupData)).unwrap();
+      // The useEffect will handle navigation after 'user' state is updated
     } catch (err) {
-      // Error handling is done in useEffect
+      // Error handling for signup is done in the useEffect above
     }
   };
 
@@ -93,7 +133,7 @@ const SignUpPage = () => {
             </h1>
           </Link>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h2>
-          <p className="text-gray-600">Join thousands of teams using Dooit</p>
+          <p className="text-gray-600">Join thousands of teams using ProcrastiNOT</p>
         </div>
 
         {/* Signup Form */}

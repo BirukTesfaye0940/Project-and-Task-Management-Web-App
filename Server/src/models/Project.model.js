@@ -37,9 +37,23 @@ const projectSchema = new mongoose.Schema(
         },
       },
     ],
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },    
   },
   { timestamps: true }
 );
+
+projectSchema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "project",
+});
+
+projectSchema.set("toObject", { virtuals: true });
+projectSchema.set("toJSON", { virtuals: true });
 
 const Project = mongoose.model("Project", projectSchema);
 export default Project;

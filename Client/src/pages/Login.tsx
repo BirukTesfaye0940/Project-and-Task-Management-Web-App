@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { CheckCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { loginUser, clearError } from "@/store/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import axios from "axios";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -31,7 +32,13 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); // Use useLocation hook to get current location
   const { loading, error, user } = useAppSelector((state) => state.auth);
+
+  // Parse query params only once
+  const queryParams = new URLSearchParams(location.search);
+  const redirect = queryParams.get("redirect");
+  const token = queryParams.get("token");
 
   const {
     register,
@@ -41,14 +48,44 @@ const LoginPage = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  // Effect to handle redirection AFTER successful login
   useEffect(() => {
     if (user) {
       toast.success("Welcome back!", {
         description: "You have successfully signed in.",
       });
-      navigate("/dashboard");
+
+      // If user logged in and there's an invite token, accept it
+      if (redirect === "accept-invite" && token) {
+        const acceptInvitation = async () => {
+          try {
+            await axios.post(
+              `http://localhost:5003/api/invite/accept/${token}`,
+              {},
+              { withCredentials: true }
+            );
+            toast.success("Invitation accepted!", {
+              description: "You have successfully joined the project.",
+            });
+            navigate("/dashboard", { replace: true }); // Use replace to prevent going back to login page
+          } catch (err: any) {
+            console.error("Failed to accept invitation:", err);
+            toast.error("Invitation Error", {
+              description:
+                err.response?.data?.message ||
+                "Failed to accept invitation. It might be invalid or expired.",
+            });
+            // Still navigate to dashboard even if invite failed, but replace the history
+            navigate("/dashboard", { replace: true });
+          }
+        };
+        acceptInvitation();
+      } else {
+        // Regular successful login, no invite token, go to dashboard
+        navigate("/dashboard", { replace: true });
+      }
     }
-  }, [user, navigate]);
+  }, [user, navigate, redirect, token]); // Add redirect and token to dependencies
 
   useEffect(() => {
     if (error) {
@@ -61,9 +98,11 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
+      // loginUser action should update the 'user' state in Redux
       await dispatch(loginUser(data)).unwrap();
+      // The useEffect will handle navigation after 'user' state is updated
     } catch (err) {
-      // Error handling is done in useEffect
+      // Error handling for login is done in the useEffect above
     }
   };
 

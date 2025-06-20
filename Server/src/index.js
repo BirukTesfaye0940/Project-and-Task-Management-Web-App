@@ -12,6 +12,7 @@ import projectRoutes from "./routes/projects.route.js";
 import taskRoutes from "./routes/tasks.route.js";
 import notificationRoutes from "./routes/notifications.route.js"
 import issuesRoutes from './routes/issues.route.js'
+import inviteRoute from './routes/invite.route.js'
 
 // Load environment variables
 dotenv.config();
@@ -68,6 +69,7 @@ app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/issues", issuesRoutes)
+app.use("/api/invite", inviteRoute)
 
 // Start server
 const PORT = process.env.PORT || 5000;

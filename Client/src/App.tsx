@@ -5,6 +5,9 @@ import SignUpPage from "./pages/Signup"
 import DashboardPage from "./pages/DashboardPage"
 import NotFound from "./pages/NotFound"
 import Layout from "./pages/Layout"
+import { Toaster } from "sonner"
+import ProjectsPage from "./pages/ProjectsPage"
+import AcceptInvitationPage from "./pages/AcceptInvitationPage"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -12,8 +15,10 @@ const router = createBrowserRouter(
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/accept-invite/:token" element={<AcceptInvitationPage />} />
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<DashboardPage/>} />
+        <Route path="/projects" element={<ProjectsPage />} />
       </Route>
       
 
@@ -24,7 +29,10 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-   <RouterProvider router={router} />
+    <div>
+      <RouterProvider router={router} />
+      <Toaster />
+    </div>
   )
 }
 

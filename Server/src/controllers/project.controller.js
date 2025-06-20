@@ -11,6 +11,7 @@ export const createProject = async (req, res) => {
       startDate,
       endDate,
       status,
+      createdBy: req.user._id, // 👈 Pulled from middleware
       team: [
         {
           user: req.user._id,
@@ -29,7 +30,13 @@ export const createProject = async (req, res) => {
 // Get all projects for the logged-in user
 export const getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ "team.user": req.user._id }).populate("team.user", "-password");
+    const projects = await Project.find({ "team.user": req.user._id })
+      .populate("team.user", "-password")
+      .populate({
+        path: "tasks",
+        options: { sort: { deadline: 1 } }, // ✅ Sort tasks by deadline ascending
+      });
+
     res.status(200).json(projects);
   } catch (error) {
     console.error("Error fetching projects:", error.message);
@@ -40,7 +47,12 @@ export const getAllProjects = async (req, res) => {
 // Get a single project by ID
 export const getProjectById = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id).populate("team.user", "-password");
+    const project = await Project.findById(req.params.id)
+      .populate("team.user", "-password")
+      .populate({
+        path: "tasks",
+        options: { sort: { deadline: 1 } }, // ✅ Sorted by deadline
+      });
 
     if (!project || !project.team.some((t) => t.user.equals(req.user._id))) {
       return res.status(403).json({ message: "Not authorized to view this project" });
