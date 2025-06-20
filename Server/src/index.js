@@ -66,7 +66,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/project", projectRoutes);
-app.use("/api/task", taskRoutes);
+app.use("/api/tasks", taskRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/issues", issuesRoutes)
 app.use("/api/invite", inviteRoute)

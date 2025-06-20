@@ -8,7 +8,7 @@ export const createTask = async (req, res) => {
     const { title, description, project, assignedTo, status, priority, deadline } = req.body;
 
     const projectDoc = await Project.findById(project);
-    if (!projectDoc) return res.status(404).json({ message: "Project not found" });
+    //if (!projectDoc) return res.status(404).json({ message: "Project not found" });
 
     // Check assigned users are in the project team
     if (assignedTo && assignedTo.length > 0) {
@@ -26,6 +26,27 @@ export const createTask = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+// GET ALL TASKS ASSIGNED TO USER, NOT LINKED TO A PROJECT
+// GET ALL TASKS CREATED BY USER, WITHOUT A PROJECT
+export const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({
+      createdBy: req.user._id,
+      $or: [
+        { project: null },
+        { project: { $exists: false } }
+      ]
+    }).populate("assignedTo", "fullName email");
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error("Get All Tasks Error:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
 
 // READ
 export const getTaskById = async (req, res) => {
