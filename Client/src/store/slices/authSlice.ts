@@ -21,6 +21,18 @@ interface AuthPayload {
   password: string;
 }
 
+export const checkAuth = createAsyncThunk(
+  "auth/check",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get("/auth/check"); // hits the protected route
+      return res.data as UserData;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Check auth failed");
+    }
+  }
+);
+
 // Thunk for Signup
 export const signupUser = createAsyncThunk(
   "auth/signup",
@@ -91,6 +103,18 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(checkAuth.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkAuth.fulfilled, (state, action: PayloadAction<UserData>) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(checkAuth.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

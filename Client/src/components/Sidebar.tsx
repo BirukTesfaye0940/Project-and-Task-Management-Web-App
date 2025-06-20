@@ -6,7 +6,7 @@ import {
   LayoutDashboard, 
   FolderKanban, 
   CheckSquare, 
-  AlertCircle, 
+  // AlertCircle, 
   Bell, 
   Settings,
   ChevronLeft,
@@ -53,12 +53,12 @@ const Sidebar = ({ className }: SidebarProps) => {
       icon: CheckSquare,
       active: location.pathname.startsWith('/tasks')
     },
-    {
-      title: 'Issues',
-      href: '/issues',
-      icon: AlertCircle,
-      active: location.pathname.startsWith('/issues')
-    },
+    // {
+    //   title: 'Issues',
+    //   href: '/issues',
+    //   icon: AlertCircle,
+    //   active: location.pathname.startsWith('/issues')
+    // },
     {
       title: 'Notifications',
       href: '/notifications',
@@ -86,9 +86,9 @@ const Sidebar = ({ className }: SidebarProps) => {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
               <CheckCircle className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Dooit
-            </h1>
+            {/* <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              ProcrastiNOT
+            </h1> */}
           </Link>
         )}
         {isCollapsed && (

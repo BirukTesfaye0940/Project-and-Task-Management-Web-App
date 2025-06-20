@@ -9,6 +9,7 @@ import { Toaster } from "sonner"
 import ProjectsPage from "./pages/ProjectsPage"
 import AcceptInvitationPage from "./pages/AcceptInvitationPage"
 import TasksPage from "./pages/TaskPage"
+import NotificationsPage from "./pages/NotificationPage"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<DashboardPage/>} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/tasks" element={<TasksPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
       </Route>
       
 
