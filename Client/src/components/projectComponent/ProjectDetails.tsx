@@ -1,5 +1,3 @@
-//Don't forget to fix the task part
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,11 +15,11 @@ interface ProjectDetailsProps {
 }
 
 export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
-  const completedTasks = project.tasks?.filter(task => task.status === 'completed').length;
-  const totalTasks = project.tasks?.length;
-  const progressPercentage = totalTasks && totalTasks > 0 ? completedTasks && (completedTasks / totalTasks) * 100 : 0;
-  const inProgressTasks = project.tasks?.filter(task => task.status === 'in-progress').length;
-  const todoTasks = project.tasks?.filter(task => task.status === 'todo').length;
+  const completedTasks = project.tasks?.filter(task => task.status === 'done').length || 0;
+  const totalTasks = project.tasks?.length || 0;
+  const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  const inProgressTasks = project.tasks?.filter(task => task.status === 'in-progress').length || 0;
+  const todoTasks = project.tasks?.filter(task => task.status === 'to-do').length || 0;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -99,7 +97,7 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium">Project Progress</h4>
-                  <span className="text-sm text-gray-600">{progressPercentage && Math.round(progressPercentage)}%</span>
+                  <span className="text-sm text-gray-600">{Math.round(progressPercentage)}%</span>
                 </div>
                 <Progress value={progressPercentage} className="h-3" />
                 <p className="text-sm text-gray-600">
@@ -124,7 +122,13 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
             </CardContent>
           </Card>
 
-          {project.tasks && <TaskList projectId={project._id} tasks={project.tasks} />}
+          {project.tasks && (
+            <TaskList 
+              projectId={project._id} 
+              tasks={project.tasks} 
+              project={project}
+            />
+          )}
         </div>
 
         <div className="space-y-6">

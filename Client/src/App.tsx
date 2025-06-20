@@ -8,6 +8,7 @@ import Layout from "./pages/Layout"
 import { Toaster } from "sonner"
 import ProjectsPage from "./pages/ProjectsPage"
 import AcceptInvitationPage from "./pages/AcceptInvitationPage"
+import TasksPage from "./pages/TaskPage"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<DashboardPage/>} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/tasks" element={<TasksPage />} />
       </Route>
       
 
