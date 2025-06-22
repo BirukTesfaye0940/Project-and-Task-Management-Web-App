@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Plus, Search, Filter, Bug, Clock, CheckCircle, AlertTriangle } from "lucide-react"
+import { Plus, Search, Filter, Bug, Clock, CheckCircle, AlertTriangle } from "lucide-react"
 import { fetchIssues, createIssue, updateIssue, deleteIssue, type Issue } from "@/store/slices/issueSlice"
 import { format } from "date-fns"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
@@ -14,10 +14,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks"
 interface IssuesPageProps {
   projectId: string
   projectName: string
-  onBack: () => void
 }
 
-export function IssuesPage({ projectId, projectName, onBack }: IssuesPageProps) {
+export function IssuesPage({ projectId, projectName }: IssuesPageProps) {
   const dispatch = useAppDispatch()
   const { issues, loading, error } = useAppSelector((state) => state.issues)
   const [searchTerm, setSearchTerm] = useState("")
@@ -109,15 +108,9 @@ export function IssuesPage({ projectId, projectName, onBack }: IssuesPageProps) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Overview
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
-            <p className="text-gray-600">{projectName}</p>
-          </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
+          <p className="text-gray-600">{projectName}</p>
         </div>
 
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

@@ -11,7 +11,7 @@ export const connectSocket = (userId: string) => {
 
     socket.on("connect", () => {
       console.log("✅ Socket connected", socket?.id);
-      socket?.emit("join-room", userId);  // Tell backend to join room
+      socket?.emit("join", userId);  // Tell backend to join room
     });
 
     socket.on("disconnect", () => {

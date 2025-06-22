@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -7,121 +7,113 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  User,
-  Plus,
-  Eye,
-  Users,
-  TrendingUp,
-  Clock,
-  CheckCircle2,
-  AlertTriangle,
-} from "lucide-react";
-import type { RootState } from "@/store/store";
+import { User, Plus, Eye, Users, Clock, CheckCircle2 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchProjects, type Project } from "@/store/slices/projectsSlice";
+import { fetchTasks } from "@/store/slices/taskSlice";
+import { Link, NavLink } from "react-router-dom";
+import { checkAuth } from "@/store/slices/authSlice";
 
-const DashboardPage = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+// Utility to map status to display text and badge classes
+const statusMap: Record<Project["status"], { label: string; badge: string }> = {
+  active: { label: "In Progress", badge: "bg-blue-100 text-blue-700" },
+  completed: { label: "Completed", badge: "bg-green-100 text-green-700" },
+  "on-hold": { label: "On Hold", badge: "bg-yellow-100 text-yellow-700" },
+};
+
+export default function DashboardPage() {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+  const { projects } = useAppSelector((state) => state.projects);
+  const { tasks } = useAppSelector((state) => state.task);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+    dispatch(fetchProjects());
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
+  // Stats
+  const activeCount = projects.filter((p) => p.status === "active").length;
+  const pendingCount = tasks.filter(
+    (t) => t.status === "to-do" || t.status === "in-progress"
+  ).length;
+  const teamCount = new Set(
+    projects.flatMap((p) =>
+      p.team.map((member) =>
+        typeof member.user === "string" ? member.user : member.user._id
+      )
+    )
+  ).size;
 
   const stats = [
     {
       title: "Active Projects",
-      value: "12",
-      change: "+2 from last month",
+      value: activeCount,
       icon: CheckCircle2,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      badge: "bg-green-50 text-green-600",
     },
     {
       title: "Pending Tasks",
-      value: "24",
-      change: "-3 from yesterday",
+      value: pendingCount,
       icon: Clock,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      badge: "bg-blue-50 text-blue-600",
     },
     {
       title: "Team Members",
-      value: "8",
-      change: "+1 new member",
+      value: teamCount,
       icon: Users,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-    },
-    {
-      title: "Open Issues",
-      value: "3",
-      change: "-2 resolved today",
-      icon: AlertTriangle,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      badge: "bg-purple-50 text-purple-600",
     },
   ];
 
-  const recentProjects = [
-    {
-      name: "Website Redesign",
-      progress: 75,
-      status: "In Progress",
-      dueDate: "2025-02-15",
-    },
-    {
-      name: "Mobile App Development",
-      progress: 45,
-      status: "In Progress",
-      dueDate: "2025-03-01",
-    },
-    {
-      name: "Marketing Campaign",
-      progress: 90,
-      status: "Review",
-      dueDate: "2025-01-30",
-    },
-    {
-      name: "Database Migration",
-      progress: 25,
-      status: "Planning",
-      dueDate: "2025-02-28",
-    },
-  ];
+  // Recent projects with real progress
+  const recent = projects.map((p) => {
+    const total = p.tasks?.length || 0;
+    const done = p.tasks?.filter((t) => t.status === "done").length || 0;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const { label, badge } = statusMap[p.status] || {
+      label: "Planning",
+      badge: "bg-gray-100 text-gray-700",
+    };
+    return {
+      id: p._id,
+      name: p.name,
+      progress: pct,
+      statusLabel: label,
+      badgeClass: badge,
+      due: p.endDate ? new Date(p.endDate).toLocaleDateString() : "N/A",
+    };
+  });
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {user?.fullName}!
+            Welcome back, {user?.fullName || "Guest"}!
           </h1>
-          <p className="text-gray-600 mt-1">
-            Here's what's happening with your projects today.
-          </p>
+          <p className="text-gray-600 mt-1">Here's what's happening today.</p>
         </div>
         <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-          <Plus className="w-4 h-4 mr-2" />
-          New Project
+          <Plus className="w-4 h-4 mr-2" /> New Project
         </Button>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <Card
-            key={index}
-            className="border-0 shadow-sm hover:shadow-md transition-shadow"
-          >
+        {stats.map((s, i) => (
+          <Card key={i} className="shadow-sm hover:shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    {stat.title}
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">{s.title}</p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">
-                    {stat.value}
+                    {s.value}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">{stat.change}</p>
                 </div>
-                <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                <div className={`p-3 rounded-lg ${s.badge}`}>
+                  {" "}
+                  <s.icon className="w-6 h-6" />
                 </div>
               </div>
             </CardContent>
@@ -129,125 +121,99 @@ const DashboardPage = () => {
         ))}
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Recent Projects */}
-        <Card className="lg:col-span-2 border-0 shadow-sm">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Recent Projects</CardTitle>
-                <CardDescription>Your most active projects</CardDescription>
-              </div>
-              <Button variant="outline" size="sm">
-                <Eye className="w-4 h-4 mr-2" />
-                View All
-              </Button>
+        <Card className="lg:col-span-2 shadow-sm">
+          <CardHeader className="flex items-center justify-between">
+            <div>
+              <CardTitle>Recent Projects</CardTitle>
+              <CardDescription>Your most active projects</CardDescription>
             </div>
+            <Link to="/projects">
+              <Button variant="outline" size="sm">
+                <Eye className="w-4 h-4 mr-2" /> View All
+              </Button>
+            </Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentProjects.map((project, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">
-                      {project.name}
-                    </h4>
-                    <div className="flex items-center space-x-4 mt-2">
-                      <div className="flex items-center space-x-2">
+              {recent.length ? (
+                recent.map((r, idx) => (
+                  <div
+                    key={r.id}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100"
+                  >
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900">{r.name}</h4>
+                      <div className="flex items-center space-x-4 mt-2">
                         <div className="w-24 bg-gray-200 rounded-full h-2">
                           <div
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${project.progress}%` }}
-                          ></div>
+                            className="h-2 rounded-full transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600"
+                            style={{ width: `${r.progress}%` }}
+                          />
                         </div>
                         <span className="text-sm text-gray-600">
-                          {project.progress}%
+                          {r.progress}%
                         </span>
                       </div>
                       <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          project.status === "In Progress"
-                            ? "bg-blue-100 text-blue-700"
-                            : project.status === "Review"
-                            ? "bg-orange-100 text-orange-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
+                        className={`mt-2 inline-block px-2 py-1 text-xs rounded-full ${r.badgeClass}`}
                       >
-                        {project.status}
+                        {r.statusLabel}
                       </span>
                     </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500">Due</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {r.due}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-500">Due</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {project.dueDate}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-center text-gray-500">
+                  No recent projects found.
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Actions & Profile */}
+        {/* Profile Card */}
         <div className="space-y-6">
-          {/* Profile Card */}
-          <Card className="border-0 shadow-sm">
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <User className="w-5 h-5 text-blue-600" />
                 <span>Profile</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-white text-xl font-semibold">
-                    {user?.fullName?.charAt(0).toUpperCase()}
+            <CardContent className="text-center">
+              <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
+                {user?.profilePic ? (
+                  <img
+                    src={user.profilePic}
+                    alt={user.fullName}
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="text-white text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center">
+                    {user?.fullName?.[0]?.toUpperCase() || "G"}
                   </span>
-                </div>
-                <h3 className="font-semibold text-gray-900">
-                  {user?.fullName}
-                </h3>
-                <p className="text-sm text-gray-600">{user?.email}</p>
+                )}
+              </div>
+              <h3 className="font-semibold text-gray-900">
+                {user?.fullName || "Guest"}
+              </h3>
+              <p className="text-sm text-gray-600">{user?.email || "N/A"}</p>
+              <NavLink to={"/profile-page"}>
                 <Button variant="outline" size="sm" className="mt-4 w-full">
                   Edit Profile
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card className="border-0 shadow-sm">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Get started with common tasks</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Button className="w-full justify-start bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Project
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Add Task
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  View Reports
-                </Button>
-              </div>
+              </NavLink>
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
   );
-};
-
-export default DashboardPage;
+}

@@ -53,10 +53,6 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
     }
   }
 
-  if (activeTab === "issues") {
-    return <IssuesPage projectId={project._id} projectName={project.name} onBack={() => setActiveTab("overview")} />
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -93,134 +89,139 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
         </nav>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <CardTitle className="text-2xl">{project.name}</CardTitle>
-                  <p className="text-gray-600">{project.description}</p>
-                </div>
-                <Badge variant="outline" className={`flex items-center gap-2 ${getStatusColor(project.status)}`}>
-                  {getStatusIcon(project.status)}
-                  {project.status}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-center gap-3 text-gray-600">
-                  <Calendar className="w-5 h-5" />
-                  <div>
-                    <p className="text-sm font-medium">Duration</p>
-                    <p className="text-sm">
-                      {format(new Date(project.startDate), "MMM dd, yyyy")} -{" "}
-                      {format(new Date(project.endDate), "MMM dd, yyyy")}
-                    </p>
+      {/* Tab Content */}
+      {activeTab === "overview" ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl">{project.name}</CardTitle>
+                    <p className="text-gray-600">{project.description}</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 text-gray-600">
-                  <Users className="w-5 h-5" />
-                  <div>
-                    <p className="text-sm font-medium">Team</p>
-                    <p className="text-sm">{project.team.length} members</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-medium">Project Progress</h4>
-                  <span className="text-sm text-gray-600">{Math.round(progressPercentage)}%</span>
-                </div>
-                <Progress value={progressPercentage} className="h-3" />
-                <p className="text-sm text-gray-600">
-                  {completedTasks} of {totalTasks} tasks completed
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-gray-400"></div>
-                  <span className="text-sm text-gray-600">To Do: {todoTasks}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                  <span className="text-sm text-gray-600">In Progress: {inProgressTasks}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                  <span className="text-sm text-gray-600">Completed: {completedTasks}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {project.tasks && <TaskList projectId={project._id} tasks={project.tasks} project={project} />}
-        </div>
-
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Team Members</CardTitle>
-            </CardHeader>
-            <InviteUserDialog projectId={project._id} />
-            <CardContent className="space-y-4">
-              {project.team.map((member) => (
-                <div key={member._id} className="flex items-center gap-3">
-                  <Avatar>
-                    <AvatarFallback className="bg-[#3B82F6] text-white">
-                      {typeof member.user === "object"
-                        ? member.user.fullName
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {typeof member.user === "object" ? member.user.fullName : "Unknown User"}
-                    </p>
-                    <p className="text-sm text-gray-600">{typeof member.user === "object" ? member.user.email : ""}</p>
-                  </div>
-                  <Badge variant="outline" className="text-xs">
-                    {member.role}
+                  <Badge variant="outline" className={`flex items-center gap-2 ${getStatusColor(project.status)}`}>
+                    {getStatusIcon(project.status)}
+                    {project.status}
                   </Badge>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <Calendar className="w-5 h-5" />
+                    <div>
+                      <p className="text-sm font-medium">Duration</p>
+                      <p className="text-sm">
+                        {format(new Date(project.startDate), "MMM dd, yyyy")} -{" "}
+                        {format(new Date(project.endDate), "MMM dd, yyyy")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <Users className="w-5 h-5" />
+                    <div>
+                      <p className="text-sm font-medium">Team</p>
+                      <p className="text-sm">{project.team.length} members</p>
+                    </div>
+                  </div>
+                </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Project Stats</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <p className="text-2xl font-bold text-[#3B82F6]">{totalTasks}</p>
-                  <p className="text-sm text-gray-600">Total Tasks</p>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-medium">Project Progress</h4>
+                    <span className="text-sm text-gray-600">{Math.round(progressPercentage)}%</span>
+                  </div>
+                  <Progress value={progressPercentage} className="h-3" />
+                  <p className="text-sm text-gray-600">
+                    {completedTasks} of {totalTasks} tasks completed
+                  </p>
                 </div>
-                <div className="text-center p-3 bg-green-50 rounded-lg">
-                  <p className="text-2xl font-bold text-green-600">{completedTasks}</p>
-                  <p className="text-sm text-gray-600">Completed</p>
+
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                    <span className="text-sm text-gray-600">To Do: {todoTasks}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <span className="text-sm text-gray-600">In Progress: {inProgressTasks}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <span className="text-sm text-gray-600">Completed: {completedTasks}</span>
+                  </div>
                 </div>
-                <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                  <p className="text-2xl font-bold text-yellow-600">{inProgressTasks}</p>
-                  <p className="text-sm text-gray-600">In Progress</p>
+              </CardContent>
+            </Card>
+
+            {project.tasks && <TaskList projectId={project._id} tasks={project.tasks} project={project} />}
+          </div>
+
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Team Members</CardTitle>
+              </CardHeader>
+              <InviteUserDialog projectId={project._id} />
+              <CardContent className="space-y-4">
+                {project.team.map((member) => (
+                  <div key={member._id} className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarFallback className="bg-[#3B82F6] text-white">
+                        {typeof member.user === "object"
+                          ? member.user.fullName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()
+                          : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-medium">
+                        {typeof member.user === "object" ? member.user.fullName : "Unknown User"}
+                      </p>
+                      <p className="text-sm text-gray-600">{typeof member.user === "object" ? member.user.email : ""}</p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {member.role}
+                    </Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Project Stats</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-3 bg-blue-50 rounded-lg">
+                    <p className="text-2xl font-bold text-[#3B82F6]">{totalTasks}</p>
+                    <p className="text-sm text-gray-600">Total Tasks</p>
+                  </div>
+                  <div className="text-center p-3 bg-green-50 rounded-lg">
+                    <p className="text-2xl font-bold text-green-600">{completedTasks}</p>
+                    <p className="text-sm text-gray-600">Completed</p>
+                  </div>
+                  <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                    <p className="text-2xl font-bold text-yellow-600">{inProgressTasks}</p>
+                    <p className="text-sm text-gray-600">In Progress</p>
+                  </div>
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-2xl font-bold text-gray-600">{todoTasks}</p>
+                    <p className="text-sm text-gray-600">To Do</p>
+                  </div>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-gray-600">{todoTasks}</p>
-                  <p className="text-sm text-gray-600">To Do</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      ) : (
+        <IssuesPage projectId={project._id} projectName={project.name} />
+      )}
     </div>
   )
 }

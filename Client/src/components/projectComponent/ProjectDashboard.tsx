@@ -9,15 +9,18 @@ import { fetchProjects, setCurrentProject } from '../../store/slices/projectsSli
 import { ProjectCard } from './ProjectCard';
 import { ProjectDetails } from './ProjectDetails';
 import { CreateProjectDialog } from './CreateProjectDialog';
+import { checkAuth } from '@/store/slices/authSlice';
 
 export function ProjectDashboard() {
   const dispatch = useAppDispatch();
   const { projects, currentProject, loading, error } = useAppSelector((state) => state.projects);
+  console.log(projects);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     dispatch(fetchProjects());
+    dispatch(checkAuth())
   }, [dispatch]);
 
   // Ensure projects is an array before filtering or mapping
@@ -37,7 +40,7 @@ export function ProjectDashboard() {
     totalTasks: projectsArray.reduce((acc, p) => acc + (p.tasks?.length ?? 0), 0),
     completedTasks: projectsArray.reduce(
       (acc, p) =>
-        acc + (p.tasks?.filter(t => t.status === "completed").length ?? 0),
+        acc + (p.tasks?.filter(t => t.status === "done").length ?? 0),
       0
     ),
   };

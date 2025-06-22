@@ -10,6 +10,8 @@ import ProjectsPage from "./pages/ProjectsPage"
 import AcceptInvitationPage from "./pages/AcceptInvitationPage"
 import TasksPage from "./pages/TaskPage"
 import NotificationsPage from "./pages/NotificationPage"
+import ProfilePage from "./pages/ProfilePage"
+import SettingsPage from "./pages/SettingsPage"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +25,8 @@ const router = createBrowserRouter(
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/profile-page" element={<ProfilePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
       
 

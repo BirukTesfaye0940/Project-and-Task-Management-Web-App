@@ -29,6 +29,7 @@ import {
 } from '@/store/slices/taskSlice';
 import type { Task } from '@/store/slices/taskSlice';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { checkAuth } from '@/store/slices/authSlice';
 
 const TasksPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -45,6 +46,7 @@ const TasksPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchTasks());
+    dispatch(checkAuth())
   }, [dispatch]);
 
   useEffect(() => {
@@ -201,7 +203,7 @@ const TasksPage: React.FC = () => {
               </div>
             ))
           ) : filteredTasks.length > 0 ? (
-            filteredTasks.map((task) => (
+            filteredTasks?.map((task) => (
               <TaskCard
                 key={task._id}
                 task={task}

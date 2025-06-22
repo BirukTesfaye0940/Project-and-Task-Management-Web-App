@@ -59,6 +59,19 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (data: { profilePic: string }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put("/auth/update-profile", data);
+      return res.data as UserData;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Update failed");
+    }
+  }
+);
+
+
 const initialState: AuthState = {
   user: null,
   loading: false,
@@ -115,6 +128,16 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(checkAuth.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProfile.fulfilled, (state, action: PayloadAction<UserData>) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateProfile.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

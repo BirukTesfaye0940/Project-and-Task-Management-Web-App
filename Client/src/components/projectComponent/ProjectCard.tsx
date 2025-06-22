@@ -12,7 +12,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
-  const completedTasks = project.tasks?.filter(task => task.status === 'completed').length;
+  const completedTasks = project.tasks?.filter(task => task.status === 'done').length;
   const totalTasks = project.tasks?.length;
   const progressPercentage = totalTasks && totalTasks > 0 ? completedTasks &&(completedTasks / totalTasks) * 100 : 0;
 

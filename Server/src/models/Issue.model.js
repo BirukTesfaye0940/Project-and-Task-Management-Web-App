@@ -6,15 +6,10 @@ const issueSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    task: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Task",
-      required: false, // Optional, as issues may relate to projects
-    },
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
-      required: false, // Optional, as issues may relate to tasks
+      required: true,
     },
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
