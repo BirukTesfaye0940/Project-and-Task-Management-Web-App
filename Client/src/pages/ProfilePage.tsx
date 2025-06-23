@@ -1,7 +1,7 @@
 'use client';
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks"; 
-import { updateProfile } from "@/store/slices/authSlice"; 
+import { checkAuth, updateProfile } from "@/store/slices/authSlice"; 
 import {
   Card,
   CardHeader,
@@ -9,8 +9,8 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+//import { Button } from "@/components/ui/button";
+//import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Camera, Mail, User, Shield, Check, Upload } from "lucide-react";
 
@@ -28,6 +28,7 @@ export default function ProfilePage() {
       const base64Image = reader.result as string;
       setSelectedImg(base64Image);
       dispatch(updateProfile({ profilePic: base64Image }));
+      dispatch(checkAuth());
     };
   };
 
@@ -243,7 +244,7 @@ export default function ProfilePage() {
                     Updating profile...
                   </span>
                 ) : (
-                  "Click the camera icon or drag & drop to update your photo"
+                  "Click the upload icon to update your photo"
                 )}
               </p>
             </div>

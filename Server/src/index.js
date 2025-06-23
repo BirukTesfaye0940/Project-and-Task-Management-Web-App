@@ -10,9 +10,9 @@ import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import projectRoutes from "./routes/projects.route.js";
 import taskRoutes from "./routes/tasks.route.js";
-import notificationRoutes from "./routes/notifications.route.js"
-import issuesRoutes from './routes/issues.route.js'
-import inviteRoute from './routes/invite.route.js'
+import notificationRoutes from "./routes/notifications.route.js";
+import issuesRoutes from './routes/issues.route.js';
+import inviteRoute from './routes/invite.route.js';
 
 // Load environment variables
 dotenv.config();
@@ -24,7 +24,7 @@ const server = http.createServer(app);
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // frontend origin
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -56,7 +56,10 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(express.json());
+
+
+app.use(express.json({ limit: "10mb" })); 
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // Health check
 app.get("/", (req, res) => {
@@ -68,8 +71,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/notifications", notificationRoutes);
-app.use("/api/issues", issuesRoutes)
-app.use("/api/invite", inviteRoute)
+app.use("/api/issues", issuesRoutes);
+app.use("/api/invite", inviteRoute);
 
 // Start server
 const PORT = process.env.PORT || 5000;

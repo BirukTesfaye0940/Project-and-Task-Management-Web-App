@@ -34,7 +34,11 @@ export const getAllProjects = async (req, res) => {
       .populate("team.user", "-password")
       .populate({
         path: "tasks",
-        options: { sort: { deadline: 1 } }, // ✅ Sort tasks by deadline ascending
+        options: { sort: { deadline: 1 } },
+        populate: {
+          path: "assignedTo",
+          select: "email fullName profilePic",
+        },
       });
 
     res.status(200).json(projects);
@@ -51,11 +55,17 @@ export const getProjectById = async (req, res) => {
       .populate("team.user", "-password")
       .populate({
         path: "tasks",
-        options: { sort: { deadline: 1 } }, // ✅ Sorted by deadline
+        options: { sort: { deadline: 1 } },
+        populate: {
+          path: "assignedTo",
+          select: "email fullName profilePic",
+        },
       });
 
     if (!project || !project.team.some((t) => t.user.equals(req.user._id))) {
-      return res.status(403).json({ message: "Not authorized to view this project" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to view this project" });
     }
 
     res.status(200).json(project);
@@ -67,75 +77,81 @@ export const getProjectById = async (req, res) => {
 
 // Update a project
 export const updateProject = async (req, res) => {
-    try {
-      const project = await Project.findById(req.params.id);
-  
-      if (!project || !project.team.some((t) => t.user.equals(req.user._id))) {
-        return res.status(403).json({ message: "Not authorized to update this project" });
-      }
-  
-      const updates = { ...req.body };
-  
-      // 🧠 Add team members safely (no duplicates)
-      if (updates.team && Array.isArray(updates.team)) {
-        const existingUserIds = project.team.map((t) => t.user.toString());
-  
-        const newMembers = updates.team.filter(
-          (member) => !existingUserIds.includes(member.user)
-        );
-  
-        if (newMembers.length > 0) {
-          project.team.push(...newMembers);
-        }
-  
-        delete updates.team; // Remove from updates so it doesn't overwrite
-      }
-  
-      // 🛠 Apply other updates (like name, status, etc.)
-      Object.assign(project, updates);
-      await project.save();
-  
-      res.status(200).json(project);
-    } catch (error) {
-      console.error("Error updating project:", error.message);
-      res.status(500).json({ message: "Internal Server Error" });
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project || !project.team.some((t) => t.user.equals(req.user._id))) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this project" });
     }
-  };
-  
+
+    const updates = { ...req.body };
+
+    // 🧠 Add team members safely (no duplicates)
+    if (updates.team && Array.isArray(updates.team)) {
+      const existingUserIds = project.team.map((t) => t.user.toString());
+
+      const newMembers = updates.team.filter(
+        (member) => !existingUserIds.includes(member.user)
+      );
+
+      if (newMembers.length > 0) {
+        project.team.push(...newMembers);
+      }
+
+      delete updates.team; // Remove from updates so it doesn't overwrite
+    }
+
+    // 🛠 Apply other updates (like name, status, etc.)
+    Object.assign(project, updates);
+    await project.save();
+
+    res.status(200).json(project);
+  } catch (error) {
+    console.error("Error updating project:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 //remove a team member from  a project
 export const removeTeamMember = async (req, res) => {
-    try {
-      const { id } = req.params; // project ID
-      const { userId } = req.body; // user to remove
-  
-      const project = await Project.findById(id);
-  
-      if (!project) {
-        return res.status(404).json({ message: "Project not found" });
-      }
-  
-      // Prevent owner from removing themselves
-      if (req.user._id.toString() === userId) {
-        return res.status(400).json({ message: "You can't remove yourself" });
-      }
-  
-      project.team = project.team.filter((t) => t.user.toString() !== userId);
-      await project.save();
-  
-      res.status(200).json({ message: "Team member removed", team: project.team });
-    } catch (error) {
-      console.error("Error removing team member:", error.message);
-      res.status(500).json({ message: "Internal Server Error" });
+  try {
+    const { id } = req.params; // project ID
+    const { userId } = req.body; // user to remove
+
+    const project = await Project.findById(id);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
     }
-  };
-  
+
+    // Prevent owner from removing themselves
+    if (req.user._id.toString() === userId) {
+      return res.status(400).json({ message: "You can't remove yourself" });
+    }
+
+    project.team = project.team.filter((t) => t.user.toString() !== userId);
+    await project.save();
+
+    res
+      .status(200)
+      .json({ message: "Team member removed", team: project.team });
+  } catch (error) {
+    console.error("Error removing team member:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 // Delete a project
 export const deleteProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
 
     if (!project || !project.team.some((t) => t.user.equals(req.user._id))) {
-      return res.status(403).json({ message: "Not authorized to delete this project" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this project" });
     }
 
     await project.deleteOne();

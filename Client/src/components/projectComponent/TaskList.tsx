@@ -58,6 +58,7 @@ export function TaskList({ projectId, tasks, project }: TaskListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  console.log("All tasks in component:", tasks);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -235,6 +236,8 @@ export function TaskList({ projectId, tasks, project }: TaskListProps) {
     "in-progress": localTasks.filter((task) => task.status === "in-progress"),
     done: localTasks.filter((task) => task.status === "done"),
   };
+  console.log("grouped tasks",groupedTasks);
+  
 
   const availableUsers =
     project?.team.filter((member) => typeof member.user === "object") || [];
@@ -569,7 +572,7 @@ export function TaskList({ projectId, tasks, project }: TaskListProps) {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-6 px-2 text-xs bg-[#3B82F6] text-white hover:bg-[#2563EB] transition-colors duration-200"
+                              className="h-6 px-2 text-xs bg-[#3B82F6] text-white hover:bg-[#2563EB] hover:text-white transition-colors duration-200"
                               onClick={() =>
                                 handleStatusChange(
                                   task,
