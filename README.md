@@ -1,3 +1,7 @@
+You were *very* close — just a few tweaks needed for formatting, consistency, and a small fix on the code block that broke Markdown syntax at the top. Here's the **cleaned-up and polished version** of your `README.md`, ready to drop into your repo like a productivity nuke. 💣🚀
+
+---
+
 ````md
 # ProcrastiNOT 🧠📋  
 *A Modern Project & Task Management Platform with Real-Time Collaboration*
@@ -59,10 +63,11 @@ ProcrastiNOT is a full-featured, web-based project management system built with 
 ## 📦 Installation & Setup
 
 ### 📁 Clone the Repository
-```
+
+```bash
 git clone https://github.com/BirukTesfaye0940/Project-and-Task-Management-Web-App.git
-cd tasknest
-```
+cd Project-and-Task-Management-Web-App
+````
 
 ### 🔧 Environment Variables
 
@@ -119,7 +124,7 @@ App will be live at:
 
 ## 🌐 Live Demo
 
-> Coming Soon 
+> Coming Soon
 
 ---
 
@@ -137,14 +142,14 @@ App will be live at:
 
 ## 🧠 Future Improvements
 
-* 🤖 AI integration for:
+* 🤖 **AI integration** for:
 
   * Smart task suggestions
   * Auto-prioritization
   * Deadline prediction
-* 📅 Calendar view for scheduling
-* 📈 Analytics dashboard for project stats
-* 🌓 Dark mode support
+* 📅 **Calendar view** for scheduling
+* 📈 **Analytics dashboard** for project stats
+* 🌓 **Dark mode support**
 
 ---
 
@@ -171,3 +176,5 @@ This project is licensed under the **MIT License**.
 *Built with ❤️, coffee, and Socket.IO ping-pong packets.*
 
 ```
+
+---
