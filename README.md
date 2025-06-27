@@ -59,10 +59,10 @@ ProcrastiNOT is a full-featured, web-based project management system built with 
 ## 📦 Installation & Setup
 
 ### 📁 Clone the Repository
-```bash
-git clone https://github.com/yourusername/tasknest.git
+```
+git clone https://github.com/BirukTesfaye0940/Project-and-Task-Management-Web-App.git
 cd tasknest
-````
+```
 
 ### 🔧 Environment Variables
 
