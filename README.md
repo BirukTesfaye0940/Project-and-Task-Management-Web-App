@@ -1,5 +1,3 @@
----
-
 ````md
 # ProcrastiNOT 🧠📋  
 *A Modern Project & Task Management Platform with Real-Time Collaboration*
