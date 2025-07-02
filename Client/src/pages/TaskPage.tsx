@@ -172,8 +172,8 @@ const TasksPage: React.FC = () => {
               <TaskFilters
                 statusFilter={filters.status}
                 priorityFilter={filters.priority}
-                onStatusFilterChange={(status) => dispatch(setStatusFilter(status))}
-                onPriorityFilterChange={(priority) => dispatch(setPriorityFilter(priority))}
+                onStatusFilterChange={(status: string) => dispatch(setStatusFilter(status as "all" | "to-do" | "in-progress" | "done"))}
+                onPriorityFilterChange={(priority: string) => dispatch(setPriorityFilter(priority as "all" | "low" | "medium" | "high"))}
                 onResetFilters={() => dispatch(resetFilters())}
               />
             </div>

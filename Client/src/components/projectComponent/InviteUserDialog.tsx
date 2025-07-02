@@ -34,7 +34,12 @@ export const InviteUserDialog = ({ projectId }: InviteUserDialogProps) => {
   })
 
   const handleSend = () => {
-    dispatch(sendInvitation(form)).then((res) => {
+    // Ensure role is of the correct type
+    const payload = {
+      ...form,
+      role: form.role as "admin" | "owner" | "regular",
+    }
+    dispatch(sendInvitation(payload)).then((res) => {
       if (res.meta.requestStatus === "fulfilled") {
         // Only close and reset on successful invitation
         setOpen(false)

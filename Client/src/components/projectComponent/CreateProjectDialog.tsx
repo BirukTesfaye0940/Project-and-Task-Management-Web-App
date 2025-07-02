@@ -18,7 +18,7 @@ export function CreateProjectDialog() {
     description: '',
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 90 days from now
-    status: 'active' as const
+    status: 'active' as 'active' | 'completed' | 'on-hold'
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

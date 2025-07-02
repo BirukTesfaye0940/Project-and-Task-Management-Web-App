@@ -137,7 +137,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-4">
               {recent.length ? (
-                recent.map((r, idx) => (
+                recent.map((r) => (
                   <div
                     key={r.id}
                     className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100"
