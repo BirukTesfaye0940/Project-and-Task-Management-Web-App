@@ -34,17 +34,23 @@ export default function DashboardPage() {
   }, [dispatch]);
 
   // Stats
-  const activeCount = projects.filter((p) => p.status === "active").length;
-  const pendingCount = tasks.filter(
-    (t) => t.status === "to-do" || t.status === "in-progress"
-  ).length;
-  const teamCount = new Set(
-    projects.flatMap((p) =>
-      p.team.map((member) =>
-        typeof member.user === "string" ? member.user : member.user._id
+const activeCount = Array.isArray(projects)
+  ? projects.filter((p) => p.status === "active").length
+  : 0;
+
+const pendingCount = Array.isArray(tasks)
+  ? tasks.filter((t) => t.status === "to-do" || t.status === "in-progress").length
+  : 0;
+
+const teamCount = Array.isArray(projects)
+  ? new Set(
+      projects.flatMap((p) =>
+        p.team.map((member) =>
+          typeof member.user === "string" ? member.user : member.user._id
+        )
       )
-    )
-  ).size;
+    ).size
+  : 0;
 
   const stats = [
     {
@@ -68,23 +74,25 @@ export default function DashboardPage() {
   ];
 
   // Recent projects with real progress
-  const recent = projects.map((p) => {
-    const total = p.tasks?.length || 0;
-    const done = p.tasks?.filter((t) => t.status === "done").length || 0;
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    const { label, badge } = statusMap[p.status] || {
-      label: "Planning",
-      badge: "bg-gray-100 text-gray-700",
-    };
-    return {
-      id: p._id,
-      name: p.name,
-      progress: pct,
-      statusLabel: label,
-      badgeClass: badge,
-      due: p.endDate ? new Date(p.endDate).toLocaleDateString() : "N/A",
-    };
-  });
+const recent = Array.isArray(projects)
+  ? projects.map((p) => {
+      const total = p.tasks?.length || 0;
+      const done = p.tasks?.filter((t) => t.status === "done").length || 0;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      const { label, badge } = statusMap[p.status] || {
+        label: "Planning",
+        badge: "bg-gray-100 text-gray-700",
+      };
+      return {
+        id: p._id,
+        name: p.name,
+        progress: pct,
+        statusLabel: label,
+        badgeClass: badge,
+        due: p.endDate ? new Date(p.endDate).toLocaleDateString() : "N/A",
+      };
+    })
+  : [];
 
   return (
     <div className="p-6 space-y-6">
