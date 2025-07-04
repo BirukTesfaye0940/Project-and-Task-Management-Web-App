@@ -21,12 +21,32 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
+// ⚠️ Open CORS Policy (Allow all origins)
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || []; // still loaded for future use
 
-// Socket.IO setup
+// 🧠 Secure version to reuse later (keep this as reference)
+/*
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+*/
+
+// 🚀 Open version for flexible deployments (e.g., Vercel preview URLs)
+app.use(cors({ origin: true, credentials: true }));
+
+// Socket.IO setup — also allow all origins
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: true,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -50,23 +70,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
 app.use(cookieParser());
-
-
 app.use(express.json({ limit: "10mb" })); 
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
